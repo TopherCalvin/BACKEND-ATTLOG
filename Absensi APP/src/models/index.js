@@ -49,6 +49,7 @@ db.Sequelize = Sequelize;
 db.User = require("./user")(sequelize, Sequelize);
 db.Company = require("./company")(sequelize, Sequelize);
 db.Attendancelog = require("./attendancelog")(sequelize, Sequelize);
+db.Token = require("./Token")(sequelize, Sequelize);
 
 // db.Attendancelog.belongsTo(db.User, {
 //   foreignKey: "user_id",
