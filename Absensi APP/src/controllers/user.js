@@ -112,8 +112,6 @@ const userController = {
             payload: JSON.stringify(payload),
           });
 
-          console.log(token);
-
           return res.send({
             message: "login berhasil",
             value: user,
@@ -137,8 +135,6 @@ const userController = {
   getByToken: async (req, res) => {
     const { token } = req.query;
     let user = jwt.verify(token, private_key);
-    console.log(user);
-
     user = await db.User.findOne({
       where: {
         id: user.id,
@@ -148,22 +144,36 @@ const userController = {
     res.send(user);
   },
   getByToken2: async (req, res) => {
-    const { token } = req.query;
-    let p = await db.Token.findOne({
-      where: {
-        token,
-      },
-    });
-
-    console.log(user);
-
-    user = await db.User.findOne({
-      where: {
-        id: JSON.parse(p.dataValues.payload).id,
-      },
-    });
-    delete user.dataValues.password;
-    res.send(user);
+    try {
+      const { token } = req.query;
+      let p = await db.Token.findOne({
+        where: {
+          [Op.and]: [
+            {
+              token,
+            },
+            {
+              expired: {
+                [Op.gt]: moment(),
+                [Op.lte]: moment().add(1, "d"),
+              },
+            },
+          ],
+        },
+      });
+      console.log(p);
+      user = await db.User.findOne({
+        where: {
+          id: JSON.parse(p.dataValues.payload).id,
+        },
+      });
+      delete user.dataValues.password;
+      res.send(user);
+    } catch (err) {
+      res.status(500).send({
+        message: err.message,
+      });
+    }
   },
 };
 
