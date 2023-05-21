@@ -154,14 +154,14 @@ const userController = {
             },
             {
               expired: {
-                [Op.gt]: moment(),
-                [Op.lte]: moment().add(1, "d"),
+                [Op.gt]: moment("00:00:00", "hh:mm:ss").format(),
+                [Op.lte]: moment().add(1, "d").format(),
               },
             },
           ],
         },
       });
-      console.log(p);
+      console.log(moment().format());
       user = await db.User.findOne({
         where: {
           id: JSON.parse(p.dataValues.payload).id,
