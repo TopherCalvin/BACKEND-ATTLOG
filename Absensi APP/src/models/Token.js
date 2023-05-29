@@ -11,6 +11,13 @@ module.exports = (sequelize, Sequelize) => {
       payload: {
         type: Sequelize.STRING,
       },
+      valid: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
+      },
+      status: {
+        type: Sequelize.ENUM("LOGIN", "FORGOT-PASSWORD"),
+      },
     },
     {
       paranoid: true,

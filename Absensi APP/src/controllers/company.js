@@ -20,7 +20,6 @@ const compController = {
         address,
       });
       return await db.Company.findAll().then((result) => {
-        console.log(req.body);
         res.send(result);
       });
     } catch (err) {

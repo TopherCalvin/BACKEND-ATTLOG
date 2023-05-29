@@ -6,6 +6,8 @@ router.get("/today", attlogController.getToday);
 
 router.get("/all", attlogController.getAll);
 
+router.get("/filter", attlogController.getFilter);
+
 router.post("/", attlogController.insertAttlog);
 
 router.patch("/", attlogController.editAttlog);

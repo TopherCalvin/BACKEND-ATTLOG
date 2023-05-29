@@ -26,6 +26,43 @@ const attlogController = {
       });
     }
   },
+  getFilter: async (req, res) => {
+    try {
+      const { user_id, time } = req.query;
+      const attLog = await db.Attendancelog.findAll({
+        where: {
+          [Op.and]: [
+            {
+              user_id: user_id,
+            },
+            {
+              [Op.and]: [
+                {
+                  createdAt: {
+                    [Op.gt]: moment(time).format(),
+                  },
+                },
+                {
+                  createdAt: {
+                    [Op.lt]: moment(time).add(1, "M").format(),
+                  },
+                },
+              ],
+            },
+            {
+              deletedAt: null,
+            },
+          ],
+        },
+      });
+      res.send(attLog);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send({
+        message: err.message,
+      });
+    }
+  },
   getToday: async (req, res) => {
     try {
       const { user_id } = req.query;
@@ -57,7 +94,6 @@ const attlogController = {
           ],
         },
       });
-      console.log(attLog);
       res.send(attLog);
     } catch (err) {
       console.log(err);
@@ -127,9 +163,9 @@ const attlogController = {
                 },
                 {
                   createdAt: {
-                    [Op.lt]: moment("00:00:00", "hh:mm:ss")
+                    [Op.lt]: moment()
                       .add(1, "days")
-                      .format(),
+                      .format("yyyy-MM-DD 00:00:00"),
                   },
                 },
               ],
@@ -137,7 +173,6 @@ const attlogController = {
           ],
         },
       });
-      console.log(attLog);
       if (attLog) {
         if (!attLog.dataValues.clock_out) {
           await db.Attendancelog.update(

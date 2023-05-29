@@ -8,11 +8,12 @@ app.use(cors());
 app.use(express.json());
 const db = require("./models");
 const router = require("./routes");
-//db.sequelize.sync({ alter: true });
+// db.sequelize.sync({ alter: true });
 
 app.use("/Users", router.userRouter);
 app.use("/Companies", router.compRouter);
 app.use("/attendancelog", router.attlogRouter);
+app.use("/avatar", express.static(`${__dirname}/public/avatar`));
 
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
